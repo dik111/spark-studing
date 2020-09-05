@@ -5,7 +5,7 @@ import org.apache.spark.{SparkConf, SparkContext}
 /**
  * 通过读取内存集合中的数据，创建RDD
  */
-object SparkCreateRDDMem {
+object Spark04CreateRDDMem {
 
   def main(args: Array[String]): Unit = {
     // 创建SparkConf并设置App名称
