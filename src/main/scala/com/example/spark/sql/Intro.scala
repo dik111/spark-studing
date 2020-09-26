@@ -132,6 +132,39 @@ class Intro {
     val df3 = spark.createDataFrame(personList)
 
 
+    val df4 = spark.read.csv("src/main/resources/BeijingPM20100101_20151231.csv")
+    df4.show()
+  }
 
+  @Test
+  def dataframe3(): Unit ={
+
+    // 创建sparkSession
+    val spark = SparkSession.builder().appName("pm analysis").master("local[6]").getOrCreate()
+
+    import spark.implicits._
+    // 读取数据集
+    val sourceDF = spark.read.option("header",value = true).csv("src/main/resources/BeijingPM20100101_20151231.csv")
+
+    // 查看dataframe的schema信息
+    sourceDF.printSchema()
+
+    // 处理
+    //sourceDF.select("year","month","PM_Dongsi").
+    //  where('PM_Dongsi =!= "NA").
+    //  groupBy('year,'month).
+    //  count()
+    //  .show()
+
+    // 将表注册为临表
+    sourceDF.createOrReplaceTempView("pm")
+
+    // 执行查询
+    val resultDF = spark.sql("select year,month, count(PM_Dongsi) from pm where PM_Dongsi !='NA' group by  year,month")
+
+    resultDF.show()
+
+    // 得出结论
+    spark.stop()
   }
 }
