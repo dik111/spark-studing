@@ -1,7 +1,8 @@
 package com.example.spark.sql
 
 import org.apache.spark.sql
-import org.apache.spark.sql.{DataFrame, SparkSession}
+import org.apache.spark.sql.catalyst.encoders.RowEncoder
+import org.apache.spark.sql.{DataFrame, Row, SparkSession}
 import org.junit
 import org.junit.Test
 
@@ -166,5 +167,22 @@ class Intro {
 
     // 得出结论
     spark.stop()
+  }
+
+  @Test
+  def dataframe4(): Unit ={
+    // 创建sparkSession
+    val spark = SparkSession.builder().appName("dataframe1").master("local[6]").getOrCreate()
+
+    // 创建dataframe
+    import spark.implicits._
+    val personList = Seq(Person("zhangsan", 10), Person("lisi", 15))
+
+    val df = personList.toDF()
+
+    df.map((row:Row) => Row(row.get(0),row.getAs[Int](1)*2))(RowEncoder.apply(df.schema)).show()
+
+    val ds = personList.toDS()
+    ds.map((person:Person) => Person(person.name,person.age * 2)).show()
   }
 }
