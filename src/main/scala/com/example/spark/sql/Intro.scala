@@ -185,4 +185,23 @@ class Intro {
     val ds = personList.toDS()
     ds.map((person:Person) => Person(person.name,person.age * 2)).show()
   }
+
+  @Test
+  def row(): Unit ={
+
+    // Row 如何创建，它是什么
+    // row 对象必须配合schema对象才会有 列名
+    val  p = new Person("zhangsan",15)
+    val row = Row("zhangsan",15)
+
+    // 如何从Row中获取数据
+    row.getString(0)
+    row.getInt(1)
+
+    // Row也是样例类
+    row match {
+      case Row(name,age) => println(name,age)
+    }
+
+  }
 }
